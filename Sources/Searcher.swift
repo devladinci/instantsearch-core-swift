@@ -222,7 +222,6 @@ import Foundation
     @objc public init(index: Index) {
         self.index = index
         super.init()
-        updateClientUserAgents()
     }
     
     /// Create a new searcher targeting the specified index and register a result handler with it.
@@ -233,18 +232,6 @@ import Foundation
     @objc public convenience init(index: Index, resultHandler: @escaping ResultHandler) {
         self.init(index: index)
         self.resultHandlers = [resultHandler]
-    }
-    
-    /// Add the library's version to the client's user agents, if not already present.
-    private func updateClientUserAgents() {
-        let bundleInfo = Bundle(for: type(of: self)).infoDictionary!
-        let name = bundleInfo["CFBundleName"] as! String
-        let version = bundleInfo["CFBundleShortVersionString"] as! String
-        let libraryVersion = LibraryVersion(name: name, version: version)
-        let client = index.client
-        if client.userAgents.index(where: { $0 == libraryVersion }) == nil {
-            client.userAgents.append(libraryVersion)
-        }
     }
     
     /// Register a result handler with this searcher.
